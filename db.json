@@ -1,0 +1,306 @@
+        {
+            "puntosVenta": [
+                {
+                    "value": "101",
+                    "label": "Sucursal Central"
+                },
+                {
+                    "value": "102",
+                    "label": "Sucursal Norte"
+                },
+                {
+                    "value": "103",
+                    "label": "Sucursal Sur"
+                }
+            ],
+            "tiposComprobante": [
+                {
+                    "value": "1",
+                    "label": "Factura A"
+                },
+                {
+                    "value": "2",
+                    "label": "Factura B"
+                },
+                {
+                    "value": "3",
+                    "label": "Factura C"
+                },
+                {
+                    "value": "4",
+                    "label": "Nota de Crédito"
+                },
+                {
+                    "value": "5",
+                    "label": "Nota de Débito"
+                }
+            ],
+            "tiposPago": [
+                {
+                    "value": "1",
+                    "label": "Efectivo"
+                },
+                {
+                    "value": "2",
+                    "label": "Tarjeta de Crédito"
+                },
+                {
+                    "value": "3",
+                    "label": "Tarjeta de Débito"
+                },
+                {
+                    "value": "4",
+                    "label": "Transferencia Bancaria"
+                }
+            ],
+            "tiposDocumento": [
+                {
+                    "value": "1",
+                    "label": "DNI"
+                },
+                {
+                    "value": "2",
+                    "label": "CUIT"
+                },
+                {
+                    "value": "3",
+                    "label": "Pasaporte"
+                }
+            ],
+            "arrayTiposDatosAdicionales": [
+                {
+                    "codigo": "1",
+                    "descripcion": "Venta de Autos y Camionetas"
+                },
+                {
+                    "codigo": "2",
+                    "descripcion": "Venta de vehículos automotores"
+                },
+                {
+                    "codigo": "3",
+                    "descripcion": "Producto y Servicio"
+                },
+                {
+                    "codigo": "4",
+                    "descripcion": "Comercialización de repuestos y accesorios"
+                },
+                {
+                    "codigo": "5",
+                    "descripcion": "Alquiler de vehículos"
+                },
+                {
+                    "codigo": "6",
+                    "descripcion": "Transporte de carga o pasajeros"
+                },
+                {
+                    "codigo": "7",
+                    "descripcion": "Mantenimiento y reparación de automotores"
+                },
+                {
+                    "codigo": "8",
+                    "descripcion": "Servicios técnicos especializados"
+                },
+                {
+                    "codigo": "9",
+                    "descripcion": "Provisión de combustible y lubricantes"
+                },
+                {
+                    "codigo": "10",
+                    "descripcion": "Otros servicios relacionados con la actividad automotriz"
+                }
+            ],
+            "monedas": [
+                {
+                    "codigo": "057",
+                    "descripcion": "Baht (Tailandia)"
+                },
+                {
+                    "codigo": "043",
+                    "descripcion": "Balboas Panameñas"
+                },
+                {
+                    "codigo": "023",
+                    "descripcion": "Bolívar Venezolano"
+                },
+                {
+                    "codigo": "024",
+                    "descripcion": "Corona Checa"
+                },
+                {
+                    "codigo": "014",
+                    "descripcion": "Coronas Danesas"
+                },
+                {
+                    "codigo": "015",
+                    "descripcion": "Coronas Noruegas"
+                },
+                {
+                    "codigo": "016",
+                    "descripcion": "Coronas Suecas"
+                },
+                {
+                    "codigo": "044",
+                    "descripcion": "Córdoba Nicaragüense"
+                },
+                {
+                    "codigo": "041",
+                    "descripcion": "Derechos Especiales de Giro"
+                },
+                {
+                    "codigo": "059",
+                    "descripcion": "Dinar Kuwaiti"
+                },
+                {
+                    "codigo": "025",
+                    "descripcion": "Dinar Serbio"
+                },
+                {
+                    "codigo": "045",
+                    "descripcion": "Dirham Marroquí"
+                },
+                {
+                    "codigo": "026",
+                    "descripcion": "Dólar Australiano"
+                },
+                {
+                    "codigo": "018",
+                    "descripcion": "Dólar Canadiense"
+                },
+                {
+                    "codigo": "DOL",
+                    "descripcion": "Dólar Estadounidense"
+                },
+                {
+                    "codigo": "002",
+                    "descripcion": "Dólar Libre EEUU"
+                },
+                {
+                    "codigo": "NZD",
+                    "descripcion": "Dólar Neozelandes"
+                },
+                {
+                    "codigo": "051",
+                    "descripcion": "Dólar de Hong Kong"
+                },
+                {
+                    "codigo": "053",
+                    "descripcion": "Dólar de Jamaica"
+                },
+                {
+                    "codigo": "052",
+                    "descripcion": "Dólar de Singapur"
+                },
+                {
+                    "codigo": "054",
+                    "descripcion": "Dólar de Taiwan"
+                },
+                {
+                    "codigo": "060",
+                    "descripcion": "Euro"
+                },
+                {
+                    "codigo": "028",
+                    "descripcion": "Florín (Antillas Holandesas)"
+                },
+                {
+                    "codigo": "056",
+                    "descripcion": "Forint (Hungría)"
+                },
+                {
+                    "codigo": "009",
+                    "descripcion": "Franco Suizo"
+                },
+                {
+                    "codigo": "049",
+                    "descripcion": "Gramos de Oro Fino"
+                },
+                {
+                    "codigo": "029",
+                    "descripcion": "Güaraní"
+                },
+                {
+                    "codigo": "063",
+                    "descripcion": "Lempira Hondureña"
+                },
+                {
+                    "codigo": "040",
+                    "descripcion": "Leu Rumano"
+                },
+                {
+                    "codigo": "046",
+                    "descripcion": "Libra Egipcia"
+                },
+                {
+                    "codigo": "021",
+                    "descripcion": "Libra Esterlina"
+                },
+                {
+                    "codigo": "035",
+                    "descripcion": "Nuevo Sol Peruano"
+                },
+                {
+                    "codigo": "031",
+                    "descripcion": "Peso Boliviano"
+                },
+                {
+                    "codigo": "033",
+                    "descripcion": "Peso Chileno"
+                },
+                {
+                    "codigo": "032",
+                    "descripcion": "Peso Colombiano"
+                },
+                {
+                    "codigo": "042",
+                    "descripcion": "Peso Dominicano"
+                },
+                {
+                    "codigo": "010",
+                    "descripcion": "Pesos Mejicanos"
+                },
+                {
+                    "codigo": "011",
+                    "descripcion": "Pesos Uruguayos"
+                },
+                {
+                    "codigo": "055",
+                    "descripcion": "Quetzal Guatemalteco"
+                },
+                {
+                    "codigo": "034",
+                    "descripcion": "Rand Sudafricano"
+                },
+                {
+                    "codigo": "012",
+                    "descripcion": "Real"
+                },
+                {
+                    "codigo": "047",
+                    "descripcion": "Riyal Saudita"
+                },
+                {
+                    "codigo": "RUB",
+                    "descripcion": "Rublo (Rusia)"
+                },
+                {
+                    "codigo": "062",
+                    "descripcion": "Rupia Hindú"
+                },
+                {
+                    "codigo": "030",
+                    "descripcion": "Shekel (Israel)"
+                },
+                {
+                    "codigo": "019",
+                    "descripcion": "Yens"
+                },
+                {
+                    "codigo": "064",
+                    "descripcion": "Yuan (Rep. Pop. China)"
+                },
+                {
+                    "codigo": "061",
+                    "descripcion": "Zloty Polaco"
+                }
+            ]
+        }

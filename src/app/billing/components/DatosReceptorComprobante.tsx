@@ -2,6 +2,9 @@ import { Paper, Typography, Box, InputLabel, Select, MenuItem, TextField, Divide
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import CondicionFrenteIVAReceptor from "./CondicionFrenteIVAReceptor";
+import CondicionFrenteIVAReceptorfacB from "./CondicionFrenteIVAReceptor";
+import DatosReceptorComprobanteDetail from "./DatosReceptorComprobanteDetail";
 
 export default function DatosReceptorComprobante() {
   return (
@@ -10,68 +13,11 @@ export default function DatosReceptorComprobante() {
         Datos Receptor Comprobante
       </Typography>
       <Box sx={{ p: 2, mb: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <InputLabel id="iva-label" sx={{ minWidth: 180 }}>Condición frente al IVA</InputLabel>
-          <Select
-            labelId="iva-label"
-            id="iva"
-            defaultValue=""
-            sx={{ minWidth: 220 }}
-          >
-            <MenuItem value="">Seleccionar...</MenuItem>
-            <MenuItem value="responsable_inscripto">Responsable Inscripto</MenuItem>
-            <MenuItem value="monotributo">Monotributo</MenuItem>
-            <MenuItem value="exento">Exento</MenuItem>
-            <MenuItem value="consumidor_final">Consumidor Final</MenuItem>
-          </Select>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <InputLabel id="tipo-doc-label" sx={{ minWidth: 180 }}>Tipo y Nro. de Documento</InputLabel>
-          <Select
-            labelId="tipo-doc-label"
-            id="tipo-doc"
-            defaultValue=""
-            sx={{ minWidth: 140 }}
-          >
-            <MenuItem value="">Seleccionar...</MenuItem>
-            <MenuItem value="dni">DNI</MenuItem>
-            <MenuItem value="cuit">CUIT</MenuItem>
-            <MenuItem value="pasaporte">Pasaporte</MenuItem>
-          </Select>
-          <TextField
-            id="nro-doc"
-            label="Nro."
-            variant="outlined"
-            sx={{ minWidth: 180 }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <InputLabel htmlFor="razon-social" sx={{ minWidth: 180 }}>A. y Nombre o Razón Social</InputLabel>
-          <TextField
-            id="razon-social"
-            label="Razón Social"
-            variant="outlined"
-            sx={{ minWidth: 400 }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <InputLabel htmlFor="domicilio-comercial" sx={{ minWidth: 180 }}>Domicilio Comercial</InputLabel>
-          <TextField
-            id="domicilio-comercial"
-            label="Domicilio Comercial"
-            variant="outlined"
-            sx={{ minWidth: 400 }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <InputLabel htmlFor="email" sx={{ minWidth: 180 }}>Email</InputLabel>
-          <TextField
-            id="email"
-            label="Email"
-            variant="outlined"
-            sx={{ minWidth: 300 }}
-          />
-        </Box>
+        
+        <DatosReceptorComprobanteDetail />
+
+        
+        
         <Divider sx={{ my: 2 }} />
         <Typography variant="subtitle1" sx={{ textAlign: "left", mb: 1 }}>
           Condiciones de Venta

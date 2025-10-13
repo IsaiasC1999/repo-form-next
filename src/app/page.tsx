@@ -50,11 +50,11 @@ export default function Home() {
           sx={{ width: 700, p: 4, ml: "auto", mr: "auto" }}
         >
          
-          <PuntoVentaTipoComprobante />
+          {/* <PuntoVentaTipoComprobante /> */}
         
 
           
-          <DatosEmisionComprobantes />
+          {/* <DatosEmisionComprobantes /> */}
           
         
           {/* Datos formulario receptor */}
@@ -62,11 +62,11 @@ export default function Home() {
           
 
           
-          <CargaProductosComprobante />
+          {/* <CargaProductosComprobante /> */}
           
 
           {/* aqui necesito una pantala que muesta todo las previsualizacion de los datos cargados */}
-          <ResumenDatosFinales />
+          {/* <ResumenDatosFinales /> */}
 
         </Paper>
 

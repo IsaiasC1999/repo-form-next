@@ -1,24 +1,24 @@
 import { Paper, Typography, Box, InputLabel, Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
-import { fetchPuntosVenta, fetchTiposComprobante } from "../_api/actions";
+import { fetchTiposComprobante, fetchPuntosVenta } from "../_api/actions";
 
 export default function PuntoVentaTipoComprobante() {
   const [puntosVenta, setPuntosVenta] = useState<{ value: string, label: string }[]>([]);
   const [selectedPuntoVenta, setSelectedPuntoVenta] = useState("");
   const [tiposComprobante, setTiposComprobante] = useState<{ value: string, label: string }[]>([]);
   const [selectedTipoComprobante, setSelectedTipoComprobante] = useState("");
-
+    
   useEffect(() => {
-    // fetchPuntosVenta().then(data => {
-    //   setPuntosVenta(data);
-    //   if (data.length > 0) setSelectedPuntoVenta(data[0].value);
-    // });
-    // fetchTiposComprobante().then(data => {
-    //   setTiposComprobante(data);
-    //   if (data.length > 0) setSelectedTipoComprobante(data[0].value);
-    // });
+    fetchPuntosVenta().then((data: any) => {
+      setPuntosVenta(data as { value: string, label: string }[]);
+      if (data.length > 0) setSelectedPuntoVenta(data[0].value);
+    });
+    fetchTiposComprobante().then((data: any) => {
+      setTiposComprobante(data as { value: string, label: string }[]);
+      if (data.length > 0) setSelectedTipoComprobante(data[0].value);
+    });
   }, []);
-
+  
   return (
     <Paper sx={{ p: 2, mb: 2, fontSize: 1 }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -35,6 +35,9 @@ export default function PuntoVentaTipoComprobante() {
             sx={{ minWidth: "300px" }}
             onChange={e => setSelectedPuntoVenta(e.target.value)}
           >
+            <MenuItem value="">
+              <em>Seleccionar...</em>
+            </MenuItem>
             {puntosVenta.map(pv => (
               <MenuItem key={pv.value} value={pv.value}>{pv.label}</MenuItem>
             ))}
@@ -50,6 +53,9 @@ export default function PuntoVentaTipoComprobante() {
             sx={{ minWidth: "300px" }}
             onChange={e => setSelectedTipoComprobante(e.target.value)}
           >
+            <MenuItem value="">
+              <em>Seleccionar...</em>
+            </MenuItem>
             {tiposComprobante.map(tc => (
               <MenuItem key={tc.value} value={tc.value}>{tc.label}</MenuItem>
             ))}
@@ -59,4 +65,3 @@ export default function PuntoVentaTipoComprobante() {
     </Paper>
   );
 }
-          
