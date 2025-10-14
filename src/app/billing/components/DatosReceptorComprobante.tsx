@@ -5,8 +5,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CondicionFrenteIVAReceptor from "./CondicionFrenteIVAReceptor";
 import CondicionFrenteIVAReceptorfacB from "./CondicionFrenteIVAReceptor";
 import DatosReceptorComprobanteDetail from "./DatosReceptorComprobanteDetail";
-
+import DebitoForm from "./DebitoForm";
+import { useState } from "react";
+import CreditoForm from "./CreditoForm";
 export default function DatosReceptorComprobante() {
+
   return (
     <Paper sx={{ p: 2, mb: 2, fontSize: 1 , textAlign: 'center' }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -24,8 +27,8 @@ export default function DatosReceptorComprobante() {
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", ml: 2 }}>
           <FormControlLabel control={<Checkbox />} label="Contado" />
-          <FormControlLabel control={<Checkbox />} label="Tarjeta de Débito" />
-          <FormControlLabel control={<Checkbox />} label="Tarjeta de Crédito" />
+          <DebitoForm />
+          <CreditoForm />
           <FormControlLabel control={<Checkbox />} label="Cuenta Corriente" />
           <FormControlLabel control={<Checkbox />} label="Cheque" />
           <FormControlLabel control={<Checkbox />} label="Transferencia Bancaria" />

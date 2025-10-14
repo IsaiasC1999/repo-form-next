@@ -1,3 +1,5 @@
+import { unknown } from "zod";
+
 const baseUrl = 'http://localhost:3001/';
 
 // Cliente-side fetch helper
@@ -41,4 +43,18 @@ export async function arrayTiposDatosAdicionales() {
 
 export async function monedaExtranjera() {
   return clientFetch(`${baseUrl}monedas`);
+}
+
+export async function unidadesDeMedida() {
+  return clientFetch(`${baseUrl}unidadesDeMedida`);
+}
+
+
+export async function getCondicionesIVA(): Promise<{ codigo: number, descripcion: string }[] | unknown> {
+  return clientFetch(`${baseUrl}condicionesIVA`);
+}
+
+
+export async function getProductosByCodigo(codigo: string): Promise<{ codigo: string, descripcion: string , precioUnitario: number } | unknown > {
+   return clientFetch(`${baseUrl}productos?codigo=${codigo}`);
 }
