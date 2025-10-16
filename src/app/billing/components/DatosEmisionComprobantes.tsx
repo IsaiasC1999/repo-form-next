@@ -7,10 +7,11 @@ import { useState, useEffect } from "react";
 import { arrayTiposDatosAdicionales } from "../_api/actions";
 import MonedaExtranjeraForm from "./MonedaExtranjeraForm";
 import { useFormStore } from "../store/useFormStore";
+import dayjs from 'dayjs';
 
 export default function DatosEmisionComprobantes() {
   
-  const { setFechaComprobante , fechaComprobante } = useFormStore(); 
+  const { setFechaComprobante, fechaComprobante } = useFormStore(); 
   
   // Estado para el select de conceptos
   const [concepto, setConcepto] = useState("");
@@ -29,6 +30,15 @@ export default function DatosEmisionComprobantes() {
     });
   }, []);
 
+  const handleFechaChange = (newValue: any) => {
+    // Convertir el objeto dayjs a string para guardar en el store
+    const fechaString = newValue ? dayjs(newValue).format('YYYY-MM-DD') : '';
+    setFechaComprobante(fechaString);
+  };
+
+  // Convertir el string del store a objeto dayjs para el DatePicker
+  const fechaValue = fechaComprobante ? dayjs(fechaComprobante) : null;
+
   return (
     <Paper sx={{ p: 2, mb: 2, fontSize: 1 }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -41,8 +51,8 @@ export default function DatosEmisionComprobantes() {
             <DemoContainer components={['DatePicker']}>
               <DatePicker
                 label="Fecha del Comprobante"
-                value={fechaComprobante as any}
-                onChange={newValue => setFechaComprobante(newValue as any)} // Actualiza el estado global
+                value={fechaValue}
+                onChange={handleFechaChange}
               />
             </DemoContainer>
           </LocalizationProvider>
