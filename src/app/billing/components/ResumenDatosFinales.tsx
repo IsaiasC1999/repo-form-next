@@ -1,6 +1,100 @@
+'use client';
+
+import React, { useState } from 'react';
 import { Paper, Typography, Divider, Box, Button } from "@mui/material";
+import { pdf } from '@react-pdf/renderer';
+import { InvoiceData } from '../types/invoice.types';
+import SimpleInvoicePDF from './SimpleInvoicePDF';
 
 export default function ResumenDatosFinales() {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Convertir los datos del resumen al formato InvoiceData
+  const createInvoiceDataFromResumen = (): InvoiceData => {
+    // Datos extraídos del resumen mostrado
+    const subtotalSinIva = 1000.00;
+    const ivaContenido = 173.55;
+    const importeTotal = subtotalSinIva;
+    
+    // Generar número de factura con timestamp
+    const numeroFactura = `00001-${String(Date.now()).slice(-8)}`;
+    
+    return {
+      empresa: {
+        razonSocial: 'EL GARAGE DEL GALLEGO S. A. S.',
+        domicilioComercial: 'Adan Quiroga 299 - Lastenia, Tucumán',
+        telefono: '0381-4123456', // Teléfono genérico
+        condicionIVA: 'Responsable Inscripto',
+      },
+      comprobante: {
+        tipo: 'A',
+        numero: numeroFactura,
+        original: true,
+        fecha: new Date().toLocaleDateString('es-AR'),
+        cuit: '30-71818609-5',
+        ingresosBrutos: 'CONVENIO MULTILATERAL 30-71818609-5',
+        fechaInicioActividades: '01/01/2020',
+      },
+      receptor: {
+        senorSra: 'ROMANO CESAR ISAIAS',
+        direccion: 'Lomas de Tafi',
+        cif: '20148730333',
+        cuit: '20-14873033-3',
+        condicionVenta: 'CONTADO',
+        localidadPartido: 'Tafi Viejo',
+        provincia: 'Tucumán',
+        iva: 'Consumidor Final',
+      },
+      items: [
+        {
+          descripcion: 'Producto/Servicio',
+          remito: '0001',
+          descuento: '0,00%',
+          cantidad: 1.00,
+          precioUnitario: subtotalSinIva,
+          importe: subtotalSinIva,
+        }
+      ],
+      totales: {
+        sonPesos: 'UN MIL CON 00/100',
+        cae: `753006${String(Date.now()).slice(-8)}`, // CAE simulado
+        vencimientoCae: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toLocaleDateString('es-AR'),
+        subtotal: subtotalSinIva,
+        iva: ivaContenido,
+        total: importeTotal + ivaContenido,
+      },
+    };
+  };
+
+  const handleConfirmarDatos = async () => {
+    setIsGenerating(true);
+    try {
+      const invoiceData = createInvoiceDataFromResumen();
+      
+      // Generar PDF
+      const blob = await pdf(<SimpleInvoicePDF data={invoiceData} />).toBlob();
+      
+      // Descargar PDF
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `factura-${invoiceData.comprobante.numero}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      // Mostrar mensaje de éxito
+      alert('¡Factura generada y descargada exitosamente!');
+      console.log('¡Factura generada exitosamente!');
+      
+    } catch (error) {
+      console.error('Error generando la factura:', error);
+      alert('Error al generar la factura. Por favor, inténtalo de nuevo.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
   return (
     <Paper sx={{ p: 3, mt: 4, background: "#f9f9f9" }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -76,9 +170,14 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">IVA Contenido: $ 173,55</Typography>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
-        <Button variant="outlined">Volver</Button>
-        <Button variant="contained">Confirmar Datos...</Button>
-        <Button variant="outlined">Menú Principal</Button>
+        <Button 
+          variant="contained" 
+          onClick={handleConfirmarDatos}
+          disabled={isGenerating}
+          size="large"
+        >
+          {isGenerating ? 'Generando Factura...' : 'Confirmar Datos'}
+        </Button>
       </Box>
     </Paper>
   );
