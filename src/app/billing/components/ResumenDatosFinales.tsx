@@ -1,11 +1,20 @@
 import { Paper, Typography, Divider, Box, Button } from "@mui/material";
+import { useFormStore } from "../store/useFormStore";
 
 export default function ResumenDatosFinales() {
+  // Leer los datos del store
+  const { puntoVenta, tipoComprobante } = useFormStore();
+
   return (
     <Paper sx={{ p: 3, mt: 4, background: "#f9f9f9" }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
         RESUMEN DE DATOS (PASO 4 DE 4)
       </Typography>
+      <Divider sx={{ mb: 2 }} />
+       
+      <Typography variant="subtitle1" sx={{ mb: 2, textAlign: "center" }}>
+        Tipo de Comprobante: {tipoComprobante?.label}
+      </Typography> 
       <Divider sx={{ mb: 2 }} />
       <Typography variant="subtitle2" sx={{ mb: 2, textAlign: "center" }}>
         El siguiente es un resumen de todos los datos ingresados.<br />
@@ -17,7 +26,7 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">Mostrar Nombre de Fantasía: Sí</Typography>
         <Typography variant="body2">Nombre Fantasía: EL GARAGE DEL GALLEGO</Typography>
         <Typography variant="body2">Razón Social: EL GARAGE DEL GALLEGO S. A. S.</Typography>
-        <Typography variant="body2">Punto de Venta: 00001</Typography>
+        <Typography variant="body2">Punto de Venta: {puntoVenta?.label || "No seleccionado"}</Typography>
         <Typography variant="body2">Domicilio: Adan Quiroga 299 - Lastenia, Tucumán</Typography>
         <Typography variant="body2">Conceptos a Incluir: Productos</Typography>
       </Box>
@@ -76,9 +85,9 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">IVA Contenido: $ 173,55</Typography>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
-        <Button variant="outlined">Volver</Button>
+        
         <Button variant="contained">Confirmar Datos...</Button>
-        <Button variant="outlined">Menú Principal</Button>
+        
       </Box>
     </Paper>
   );

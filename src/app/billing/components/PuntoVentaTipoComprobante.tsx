@@ -1,23 +1,39 @@
 import { Paper, Typography, Box, InputLabel, Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { fetchTiposComprobante, fetchPuntosVenta } from "../_api/actions";
+import { useFormStore } from "../store/useFormStore";
 
 export default function PuntoVentaTipoComprobante() {
   const [puntosVenta, setPuntosVenta] = useState<{ value: string, label: string }[]>([]);
-  const [selectedPuntoVenta, setSelectedPuntoVenta] = useState("");
   const [tiposComprobante, setTiposComprobante] = useState<{ value: string, label: string }[]>([]);
-  const [selectedTipoComprobante, setSelectedTipoComprobante] = useState("");
-    
+  
+  // Zustand store
+  const { puntoVenta, tipoComprobante, setPuntoVenta, setTipoComprobante } = useFormStore();
+  
   useEffect(() => {
-    fetchPuntosVenta().then((data: any) => {
+    fetchPuntosVenta().then((data) => {
       setPuntosVenta(data as { value: string, label: string }[]);
-      if (data.length > 0) setSelectedPuntoVenta(data[0].value);
+      if (data.length > 0 && !puntoVenta) {
+        setPuntoVenta(data[0]);
+      }
     });
-    fetchTiposComprobante().then((data: any) => {
+    fetchTiposComprobante().then((data) => {
       setTiposComprobante(data as { value: string, label: string }[]);
-      if (data.length > 0) setSelectedTipoComprobante(data[0].value);
+      if (data.length > 0 && !tipoComprobante) {
+        setTipoComprobante(data[0]);
+      }
     });
-  }, []);
+  }, [puntoVenta, tipoComprobante, setPuntoVenta, setTipoComprobante]);
+
+  const handlePuntoVentaChange = (value: string) => {
+    const selected = puntosVenta.find(pv => pv.value === value);
+    setPuntoVenta(selected || null);
+  };
+
+  const handleTipoComprobanteChange = (value: string) => {
+    const selected = tiposComprobante.find(tc => tc.value === value);
+    setTipoComprobante(selected || null);
+  };
   
   return (
     <Paper sx={{ p: 2, mb: 2, fontSize: 1 }}>
@@ -30,10 +46,10 @@ export default function PuntoVentaTipoComprobante() {
           <Select
             labelId="punto-venta-label"
             id="punto-venta"
-            value={selectedPuntoVenta}
+            value={puntoVenta?.value || ""}
             label="Punto de Venta a utilizar"
             sx={{ minWidth: "300px" }}
-            onChange={e => setSelectedPuntoVenta(e.target.value)}
+            onChange={e => handlePuntoVentaChange(e.target.value)}
           >
             <MenuItem value="">
               <em>Seleccionar...</em>
@@ -48,10 +64,10 @@ export default function PuntoVentaTipoComprobante() {
           <Select
             labelId="tipo-comprobante-label"
             id="tipo-comprobante"
-            value={selectedTipoComprobante}
+            value={tipoComprobante?.value || ""}
             label="Tipo de Comprobante"
             sx={{ minWidth: "300px" }}
-            onChange={e => setSelectedTipoComprobante(e.target.value)}
+            onChange={e => handleTipoComprobanteChange(e.target.value)}
           >
             <MenuItem value="">
               <em>Seleccionar...</em>

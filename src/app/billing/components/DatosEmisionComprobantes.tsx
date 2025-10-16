@@ -6,13 +6,18 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState, useEffect } from "react";
 import { arrayTiposDatosAdicionales } from "../_api/actions";
 import MonedaExtranjeraForm from "./MonedaExtranjeraForm";
+import { useFormStore } from "../store/useFormStore";
 
 export default function DatosEmisionComprobantes() {
+  
+  const { setFechaComprobante , fechaComprobante } = useFormStore(); 
+  
   // Estado para el select de conceptos
   const [concepto, setConcepto] = useState("");
   const [referenciaComercial, setReferenciaComercial] = useState("");
   // Estado para la fecha del comprobante
-  const [fechaComprobante, setFechaComprobante] = useState(null);
+  // const [fechaComprobante, setFechaComprobante] = useState(null);
+
   const [selectedActividad, setSelectedActividad] = useState("");
   const [actividades, setActividades] = useState<{ codigo: number, descripcion: string }[]>([]);
   const [monedaExtranjera, setMonedaExtranjera] = useState(true);
@@ -36,8 +41,8 @@ export default function DatosEmisionComprobantes() {
             <DemoContainer components={['DatePicker']}>
               <DatePicker
                 label="Fecha del Comprobante"
-                value={fechaComprobante}
-                onChange={newValue => setFechaComprobante(newValue)}
+                value={fechaComprobante as any}
+                onChange={newValue => setFechaComprobante(newValue as any)} // Actualiza el estado global
               />
             </DemoContainer>
           </LocalizationProvider>

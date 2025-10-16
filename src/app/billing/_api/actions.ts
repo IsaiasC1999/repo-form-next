@@ -3,7 +3,7 @@ import { unknown } from "zod";
 const baseUrl = 'http://localhost:3001/';
 
 // Cliente-side fetch helper
-async function clientFetch(url: string, options?: RequestInit): Promise<unknown> {
+async function clientFetch(url: string, options?: RequestInit): Promise<any> {
   const token = document.cookie
     .split('; ')
     .find(row => row.startsWith('session='))
@@ -27,12 +27,12 @@ async function clientFetch(url: string, options?: RequestInit): Promise<unknown>
 
 
 //metodo para tipo de comprobante
-export async function fetchTiposComprobante() {
+export async function fetchTiposComprobante() : Promise<{ value: string, label: string }[]> {
   return clientFetch(`${baseUrl}tiposComprobante`);
 }
 
 //metodo para puntos de venta
-export async function fetchPuntosVenta() {
+export async function fetchPuntosVenta() : Promise<{ value: string, label: string }[]> {
   return clientFetch(`${baseUrl}puntosVenta`);
 }
 
@@ -50,11 +50,11 @@ export async function unidadesDeMedida() {
 }
 
 
-export async function getCondicionesIVA(): Promise<{ codigo: number, descripcion: string }[] | unknown> {
+export async function getCondicionesIVA(): Promise<{ codigo: number, descripcion: string }[] > {
   return clientFetch(`${baseUrl}condicionesIVA`);
 }
 
 
-export async function getProductosByCodigo(codigo: string): Promise<{ codigo: string, descripcion: string , precioUnitario: number } | unknown > {
+export async function getProductosByCodigo(codigo: string): Promise<{ codigo: string, descripcion: string , precioUnitario: number }  > {
    return clientFetch(`${baseUrl}productos?codigo=${codigo}`);
 }
