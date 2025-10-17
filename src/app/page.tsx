@@ -7,6 +7,7 @@ import { z } from "zod";
 import DatosEmisionComprobantes from "./billing/components/DatosEmisionComprobantes";
 import DatosReceptorComprobante from "./billing/components/DatosReceptorComprobante";
 import PuntoVentaTipoComprobante from "./billing/components/PuntoVentaTipoComprobante";
+import BillingPage from "./billing/page";
 
 const schema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
@@ -130,6 +131,7 @@ export default function Home() {
           </Typography>
         )}
       </Paper>
+      {/* <BillingPage /> */}
     </Box>
   );
 }

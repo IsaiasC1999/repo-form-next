@@ -1,10 +1,9 @@
+'use client';
+
+import React, { useState } from 'react';
 import { Paper, Typography, Divider, Box, Button } from "@mui/material";
-import { useFormStore } from "../store/useFormStore";
 
 export default function ResumenDatosFinales() {
-  // Leer los datos del store
-  const { puntoVenta, tipoComprobante } = useFormStore();
-
   return (
     <Paper sx={{ p: 3, mt: 4, background: "#f9f9f9" }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -85,9 +84,9 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">IVA Contenido: $ 173,55</Typography>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
-        
+        <Button variant="outlined">Volver</Button>
         <Button variant="contained">Confirmar Datos...</Button>
-        
+        <Button variant="outlined">Menú Principal</Button>
       </Box>
     </Paper>
   );
