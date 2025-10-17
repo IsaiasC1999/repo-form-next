@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, InputLabel, TextField, Select, MenuItem, Button } from "@mui/material";
 import { unidadesDeMedida, getCondicionesIVA, getProductosByCodigo } from "../_api/actions";
+import { useFormStore } from "../store/useFormStore";
 
 interface ItemProductoProps {
   itemId: number;
@@ -10,15 +11,8 @@ interface ItemProductoProps {
 }
 
 export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubtotalChange }: ItemProductoProps) {
-  const [unidadMedidaOptions, setUnidadMedidaOptions] = useState<{ codigo: string, descripcion: string }[]>([]);
-  const [unidadMedida, setUnidadMedida] = useState("");
-  const [condicionesIVAOptions, setCondicionesIVAOptions] = useState<{ codigo: number, descripcion: string }[]>([]);
-  const [iva, setIva] = useState("");
-  const [codigo, setCodigo] = useState("");
-  const [productoDescripcion, setProductoDescripcion] = useState("");
-  const [precioUnitario, setPrecioUnitario] = useState("");
-  const [cantidad, setCantidad] = useState("1");
-  const [subtotal, setSubtotal] = useState("");
+
+   const { condicionesIVAOptions,iva ,setUnidadMedidaOptions, setUnidadMedida, setCondicionesIVAOptions, setIva, setCodigo, setProductoDescripcion, setPrecioUnitario, setCantidad, setSubtotal ,cantidad , precioUnitario , subtotal, productoDescripcion, codigo , unidadMedida , unidadMedidaOptions} = useFormStore();
 
   // Cargar datos iniciales solo una vez
   useEffect(() => {

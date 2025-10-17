@@ -20,6 +20,18 @@ interface FormState {
     razonSocial: string;
     domicilioComercial: string;
     condicionIVA: { codigo: string, descripcion: string } | null;
+    condicionesVenta: string[];
+
+   // Datos de productos/línea de venta
+    unidadMedidaOptions: { codigo: string; descripcion: string }[];
+    unidadMedida: string;
+    condicionesIVAOptions: { codigo: number; descripcion: string }[];
+    iva: string;
+    codigo: string;
+    productoDescripcion: string;
+    precioUnitario: string;
+    cantidad: string;
+    subtotal: string;
 
   // Actions
   setPuntoVenta: (puntoVenta: { codigo: string; descripcion: string } | null) => void;
@@ -34,7 +46,18 @@ interface FormState {
   setRazonSocial: (razonSocial: string) => void;
   setDomicilioComercial: (domicilioComercial: string) => void;
   setCondicionIVA: (condicionIVA: { codigo: string, descripcion: string } | null) => void;
-
+  setCondicionesVenta: (condicionesVenta: string[]) => void;
+  
+  // Producto actions
+  setUnidadMedidaOptions: (unidadMedidaOptions: { codigo: string; descripcion: string }[]) => void;
+  setUnidadMedida: (unidadMedida: string) => void;
+  setCondicionesIVAOptions: (condicionesIVAOptions: { codigo: number; descripcion: string }[]) => void;
+  setIva: (iva: string) => void;
+  setCodigo: (codigo: string) => void;
+  setProductoDescripcion: (productoDescripcion: string) => void;
+  setPrecioUnitario: (precioUnitario: string) => void;
+  setCantidad: (cantidad: string) => void;
+  setSubtotal: (subtotal: string) => void;
 }
 
 export const useFormStore = create<FormState>()(
@@ -53,6 +76,18 @@ export const useFormStore = create<FormState>()(
       razonSocial: '',
       domicilioComercial: '',
       condicionIVA: null,
+      condicionesVenta: [],
+      
+      // Datos de productos/línea de venta - valores iniciales
+      unidadMedidaOptions: [],
+      unidadMedida: '',
+      condicionesIVAOptions: [],
+      iva: '',
+      codigo: '',
+      productoDescripcion: '',
+      precioUnitario: '',
+      cantidad: '1',
+      subtotal: '',
 
       // Actions
       setPuntoVenta: (puntoVenta) => set({ puntoVenta }),
@@ -70,6 +105,18 @@ export const useFormStore = create<FormState>()(
       setRazonSocial: (razonSocial) => set({ razonSocial }),
       setDomicilioComercial: (domicilioComercial) => set({ domicilioComercial }),
       setCondicionIVA: (condicionIVA) => set({ condicionIVA }),
+      setCondicionesVenta: (condicionesVenta) => set({ condicionesVenta }),
+      
+      // Producto setters
+      setUnidadMedidaOptions: (unidadMedidaOptions) => set({ unidadMedidaOptions }),
+      setUnidadMedida: (unidadMedida) => set({ unidadMedida }),
+      setCondicionesIVAOptions: (condicionesIVAOptions) => set({ condicionesIVAOptions }),
+      setIva: (iva) => set({ iva }),
+      setCodigo: (codigo) => set({ codigo }),
+      setProductoDescripcion: (productoDescripcion) => set({ productoDescripcion }),
+      setPrecioUnitario: (precioUnitario) => set({ precioUnitario }),
+      setCantidad: (cantidad) => set({ cantidad }),
+      setSubtotal: (subtotal) => set({ subtotal }),
     }),
     {
       name: 'form-storage',

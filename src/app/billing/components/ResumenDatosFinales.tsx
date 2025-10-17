@@ -8,7 +8,7 @@ import InvoicePDF from './InvoicePDF';
 import { InvoiceData } from '../lib/invoice.types';
 
 export default function ResumenDatosFinales() {
-  const { tipoComprobante, puntoVenta , fechaComprobante , concepto , tipoDocumento , numeroDocumento , razonSocial , domicilioComercial } = useFormStore();
+  const { tipoComprobante, puntoVenta , fechaComprobante , concepto , tipoDocumento , numeroDocumento , razonSocial , domicilioComercial , condicionIVA , condicionesVenta } = useFormStore();
   
   // Adaptar los datos al formato que espera InvoicePDF
   const invoiceData : InvoiceData = {
@@ -58,6 +58,7 @@ export default function ResumenDatosFinales() {
   };
 
   const handleConfirmarDatos = async () => {
+    
     try {
       // Generar el PDF usando el componente InvoicePDF
       const blob = await pdf(<InvoicePDF data={invoiceData} />).toBlob();
@@ -109,8 +110,8 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">{tipoDocumento?.descripcion}: {numeroDocumento}</Typography>
         <Typography variant="body2">Razón Social: {razonSocial}</Typography>
         <Typography variant="body2">Domicilio Comercial: {domicilioComercial}</Typography>
-        <Typography variant="body2">Condición frente al IVA: Consumidor Final</Typography>
-        <Typography variant="body2">Condiciones de Venta: Contado</Typography>
+        <Typography variant="body2">Condición frente al IVA: {condicionIVA?.descripcion || "No seleccionado"}</Typography>
+        <Typography variant="body2">Condiciones de Venta: {condicionesVenta[0]   || "No seleccionadas"}</Typography>
         <Typography variant="body2">Comprobantes Asociados: -</Typography>
       </Box>
       <Box sx={{ mb: 2 }}>

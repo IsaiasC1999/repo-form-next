@@ -6,7 +6,26 @@ import DatosReceptorComprobanteDetail from "../DatosReceptorComprobanteDetail";
 import DebitoForm from "../DebitoForm";
 import { useState } from "react";
 import CreditoForm from "../CreditoForm";
+import { useFormStore } from "../../store/useFormStore";
+
 export default function DatosReceptorComprobante() {
+  // const [condicionesVenta, setCondicionesVenta] = useState<string[]>([]);
+  const {condicionesVenta,setCondicionesVenta} = useFormStore();
+  const handleCheckboxChange = (condicion: string, checked: boolean) => {
+    const currentArray = Array.isArray(condicionesVenta) ? condicionesVenta : [];
+    
+    if (checked) {
+      // Agregar la condición si no está ya en el array
+      const newCondiciones = [...currentArray, condicion];
+      console.log("Condiciones de venta seleccionadas:", newCondiciones);
+      setCondicionesVenta(newCondiciones);
+    } else {
+      // Remover la condición del array
+      const newCondiciones = currentArray.filter(item => item !== condicion);
+      console.log("Condiciones de venta seleccionadas:", newCondiciones);
+      setCondicionesVenta(newCondiciones);
+    }
+  };
 
   return (
     <Paper sx={{ p: 2, mb: 2, fontSize: 1 , textAlign: 'center' }}>
@@ -24,14 +43,62 @@ export default function DatosReceptorComprobante() {
           Condiciones de Venta
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", ml: 2 }}>
-          <FormControlLabel control={<Checkbox />} label="Contado" />
+          <FormControlLabel 
+            control={
+              <Checkbox 
+                checked={Array.isArray(condicionesVenta) && condicionesVenta.includes("Contado")}
+                onChange={(e) => handleCheckboxChange("Contado", e.target.checked)}
+              />
+            } 
+            label="Contado" 
+          />
           <DebitoForm />
           <CreditoForm />
-          <FormControlLabel control={<Checkbox />} label="Cuenta Corriente" />
-          <FormControlLabel control={<Checkbox />} label="Cheque" />
-          <FormControlLabel control={<Checkbox />} label="Transferencia Bancaria" />
-          <FormControlLabel control={<Checkbox />} label="Otra" />
-          <FormControlLabel control={<Checkbox />} label="Otros medios de pago electrónico" />
+          <FormControlLabel 
+            control={
+              <Checkbox 
+                checked={Array.isArray(condicionesVenta) && condicionesVenta.includes("Cuenta Corriente")}
+                onChange={(e) => handleCheckboxChange("Cuenta Corriente", e.target.checked)}
+              />
+            } 
+            label="Cuenta Corriente" 
+          />
+          <FormControlLabel 
+            control={
+              <Checkbox 
+                checked={Array.isArray(condicionesVenta) && condicionesVenta.includes("Cheque")}
+                onChange={(e) => handleCheckboxChange("Cheque", e.target.checked)}
+              />
+            } 
+            label="Cheque" 
+          />
+          <FormControlLabel 
+            control={
+              <Checkbox 
+                checked={Array.isArray(condicionesVenta) && condicionesVenta.includes("Transferencia Bancaria")}
+                onChange={(e) => handleCheckboxChange("Transferencia Bancaria", e.target.checked)}
+              />
+            } 
+            label="Transferencia Bancaria" 
+          />
+          <FormControlLabel 
+            control={
+              <Checkbox 
+                checked={Array.isArray(condicionesVenta) && condicionesVenta.includes("Otra")}
+                onChange={(e) => handleCheckboxChange("Otra", e.target.checked)}
+              />
+            } 
+            label="Otra" 
+          />
+          <FormControlLabel 
+            control={
+              <Checkbox 
+                checked={Array.isArray(condicionesVenta) && condicionesVenta.includes("Otros medios de pago electrónico")}
+                onChange={(e) => handleCheckboxChange("Otros medios de pago electrónico", e.target.checked)}
+              />
+            } 
+            label="Otros medios de pago electrónico" 
+          />
         </Box>
         {/* Compradores */}
         <Divider sx={{ my: 2 }} />

@@ -6,7 +6,7 @@ import CondicionFrenteIVAReceptorFacturaA from "./DatosReceptorFactura/Condicion
 import { set } from "zod";
 
 // Opciones para consumidor final
-const tiposDocConsumidorFinal = [
+const tiposDocumentoParaFacturaBConsumidorFinal = [
     { codigo: "80", descripcion: "CUIT" },
     { codigo: "86", descripcion: "CUIL" },
     { codigo: "87", descripcion: "CDI" },
@@ -19,79 +19,120 @@ const tiposDocConsumidorFinal = [
     { codigo: "30", descripcion: "Certificado de Migración" }
 ];
 
+// Opciones para casos específicos
+const tipoDocumentoCUIT = [
+    { codigo: "80", descripcion: "CUIT" }
+];
+
+const tipoDocumentoPasaporte = [
+    { codigo: "94", descripcion: "Pasaporte" }
+];
+
     
  
 
 export default function DatosReceptorComprobanteDetail() {
     // const [condicionIVA, setCondicionIVA] = useState("");
-    const [tipoDoc, setTipoDoc] = useState("");
-    const { tipoComprobante , setTipoDocumento , setNumeroDocumento , numeroDocumento , setRazonSocial , razonSocial , setDomicilioComercial , domicilioComercial , condicionIVA , setCondicionIVA } = useFormStore();
+    // const [tipoDoc, setTipoDoc] = useState("");
+    const { tipoComprobante , setTipoDocumento , setNumeroDocumento , numeroDocumento , setRazonSocial , razonSocial , setDomicilioComercial , domicilioComercial , condicionIVA , setCondicionIVA, tipoDocumento} = useFormStore();
 
     // Renderiza el select de tipo de documento según la condición frente al IVA
-    function renderTipoDocSelect() {
-        if (condicionIVA === "4" || condicionIVA === "7" || condicionIVA === "10" || condicionIVA === "15") {
-            // IVA Sujeto Exento o Sujeto No Categorizado: solo CUIT
+    function renderTipoDocSelect(condicionIVAcodigo: string | undefined) {
+        // IVA Sujeto Exento, Sujeto No Categorizado, IVA Liberado, IVA No Alcanzado: solo CUIT
+        if (condicionIVA?.codigo === "4" || condicionIVA?.codigo === "7" || condicionIVA?.codigo === "10" || condicionIVA?.codigo === "15") {
             return (
                 <Select
                     labelId="tipo-doc-label"
                     id="tipo-doc"
-                    value={tipoDoc}
+                    value={tipoDocumento?.codigo || ""}
                     onChange={e => {
-                        setTipoDoc(e.target.value);
-                        setTipoDocumento({ codigo: e.target.value, descripcion: "CUIT" });
-                        
+                        const selectedTipo = tipoDocumentoCUIT.find(opt => opt.codigo === e.target.value);
+                        setTipoDocumento(selectedTipo || null);
                     }}
                     sx={{ minWidth: 140 }}
                 >
-                    <MenuItem value="80">CUIT</MenuItem>
-                </Select>
-            );
-        }
-        if (condicionIVA === "5") {
-            // Consumidor Final: todos los tipos
-            return (
-                <Select
-                    labelId="idTipoDocReceptor-label"
-                    id="idtipodocreceptor"
-                    value={tipoDoc}
-                    onChange={e =>{
-                        setTipoDoc(e.target.value);
-                        setTipoDocumento({ codigo: e.target.value,  descripcion: tiposDocConsumidorFinal.find(opt => opt.codigo === e.target.value)?.descripcion || ""});
-                    }}
-                    sx={{ minWidth: 138 }}
-                >
-                    {tiposDocConsumidorFinal.map(opt => (
+                    {tipoDocumentoCUIT.map(opt => (
                         <MenuItem key={opt.codigo} value={opt.codigo}>{opt.descripcion}</MenuItem>
                     ))}
                 </Select>
             );
-           
         }
-         if (condicionIVA === "8" || condicionIVA === "9") {
-                // Proveedor del Exterior o Cliente del Exterior: solo Pasaporte
-                return (
-                    <Select
-                        labelId="idTipoDocReceptor-label"
-                        id="idtipodocreceptor"
-                        value={tipoDoc}
-                        onChange={e => setTipoDoc(e.target.value)}
-                        sx={{ minWidth: 138 }}
-                    >
-                        <MenuItem value="94">Pasaporte</MenuItem>
-                    </Select>
-                );}
-       // Default: DNI, CUIT, Pasaporte
+        
+        // Consumidor Final: todos los tipos de documento
+        if (condicionIVA?.codigo === "5") {
+            console.log("Es Consumidor Final");
+            return (
+                <Select
+                    labelId="idTipoDocReceptor-label"
+                    id="idtipodocreceptor"
+                    value={tipoDocumento?.codigo || ""}
+                    onChange={e => {
+                        const selectedTipo = tiposDocumentoParaFacturaBConsumidorFinal.find(opt => opt.codigo === e.target.value);
+                        setTipoDocumento(selectedTipo || null);
+                    }}
+                    sx={{ minWidth: 138 }}
+                >
+                    {tiposDocumentoParaFacturaBConsumidorFinal.map(opt => (
+                        <MenuItem key={opt.codigo} value={opt.codigo}>{opt.descripcion}</MenuItem>
+                    ))}
+                </Select>
+            );
+        }
+        
+        // Proveedor del Exterior o Cliente del Exterior: solo Pasaporte
+        if (condicionIVA?.codigo === "8" || condicionIVA?.codigo === "9") {
+            return (
+                <Select
+                    labelId="idTipoDocReceptor-label"
+                    id="idtipodocreceptor"
+                    value={tipoDocumento?.codigo || ""}
+                    onChange={e => {
+                        const selectedTipo = tipoDocumentoPasaporte.find(opt => opt.codigo === e.target.value);
+                        setTipoDocumento(selectedTipo || null);
+                    }}
+                    sx={{ minWidth: 138 }}
+                >
+                    {tipoDocumentoPasaporte.map(opt => (
+                        <MenuItem key={opt.codigo} value={opt.codigo}>{opt.descripcion}</MenuItem>
+                    ))}
+                </Select>
+            );
+        }
+
+        //para Factura A
+        if(condicionIVA?.codigo === "1" || condicionIVA?.codigo === "6" || condicionIVA?.codigo === "13" || condicionIVA?.codigo === "16") {
+            return (
+                 <Select
+                    labelId="tipo-doc-label"
+                    id="tipo-doc"
+                    value={tipoDocumento?.codigo || ""}
+                    onChange={e => {
+                        const selectedTipo = tipoDocumentoCUIT.find(opt => opt.codigo === e.target.value);
+                        setTipoDocumento(selectedTipo || null);
+                    }}
+                    sx={{ minWidth: 140 }}
+                >
+                    {tipoDocumentoCUIT.map(opt => (
+                        <MenuItem key={opt.codigo} value={opt.codigo}>{opt.descripcion}</MenuItem>
+                    ))}
+                </Select>
+            );
+        }
+        // Caso por defecto: CUIT
         return (
             <Select
-                labelId="idTipoDocReceptor-label"
-                id="idtipodocreceptor"
-                value={tipoDoc}
-                // onChange={e => setTipoDoc(e.target.value)}
-                sx={{ minWidth: 138 }}
+                labelId="tipo-doc-label"
+                id="tipo-doc"
+                value={tipoDocumento?.codigo || ""}
+                onChange={e => {
+                    const selectedTipo = tipoDocumentoCUIT.find(opt => opt.codigo === e.target.value);
+                    setTipoDocumento(selectedTipo || null);
+                }}
+                sx={{ minWidth: 140 }}
             >
-                <MenuItem value="dni">---</MenuItem>
-                <MenuItem value="cuit">---</MenuItem>
-                <MenuItem value="pasaporte">---</MenuItem>
+                {tipoDocumentoCUIT.map(opt => (
+                    <MenuItem key={opt.codigo} value={opt.codigo}>{opt.descripcion}</MenuItem>
+                ))}
             </Select>
         );
     }
@@ -121,8 +162,8 @@ export default function DatosReceptorComprobanteDetail() {
         
                 {selectCondicionIVAReceptor(tipoComprobante?.codigo || "")}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <InputLabel id="tipo-doc-label" sx={{ minWidth: 180 }}>Tipo y Nro. de Documento</InputLabel>
-                    {renderTipoDocSelect()}
+                    <InputLabel id="tipo-doc-label" sx={{ minWidth: 180 }}>{tipoComprobante?.codigo === "01" ? "CUIT" : "Tipo y Nro. de Documento" }</InputLabel>
+                    {renderTipoDocSelect(condicionIVA?.codigo)}
                     <TextField
                         id="nro-doc"
                         label="Nro."
