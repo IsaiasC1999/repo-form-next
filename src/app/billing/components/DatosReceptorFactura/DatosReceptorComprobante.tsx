@@ -2,12 +2,10 @@ import { Paper, Typography, Box, InputLabel, Select, MenuItem, TextField, Divide
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import CondicionFrenteIVAReceptor from "./CondicionFrenteIVAReceptor";
-import CondicionFrenteIVAReceptorfacB from "./CondicionFrenteIVAReceptor";
-import DatosReceptorComprobanteDetail from "./DatosReceptorComprobanteDetail";
-import DebitoForm from "./DebitoForm";
+import DatosReceptorComprobanteDetail from "../DatosReceptorComprobanteDetail";
+import DebitoForm from "../DebitoForm";
 import { useState } from "react";
-import CreditoForm from "./CreditoForm";
+import CreditoForm from "../CreditoForm";
 export default function DatosReceptorComprobante() {
 
   return (
@@ -18,7 +16,7 @@ export default function DatosReceptorComprobante() {
       <Box sx={{ p: 2, mb: 2, display: "flex", flexDirection: "column", gap: 2 }}>
         
         <DatosReceptorComprobanteDetail />
-
+      
         
         
         <Divider sx={{ my: 2 }} />

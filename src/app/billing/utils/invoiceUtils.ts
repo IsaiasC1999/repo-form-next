@@ -1,4 +1,4 @@
-import { InvoiceData } from '../types/invoice.types';
+import { InvoiceData } from '../lib/invoice.types';
 
 export const sampleInvoiceData: InvoiceData = {
   empresa: {

@@ -1,9 +1,83 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Paper, Typography, Divider, Box, Button } from "@mui/material";
+import { useFormStore } from '../store/useFormStore';
+import { pdf } from '@react-pdf/renderer';
+import InvoicePDF from './InvoicePDF';
+import { InvoiceData } from '../lib/invoice.types';
 
 export default function ResumenDatosFinales() {
+  const { tipoComprobante, puntoVenta , fechaComprobante , concepto , tipoDocumento , numeroDocumento , razonSocial , domicilioComercial } = useFormStore();
+  
+  // Adaptar los datos al formato que espera InvoicePDF
+  const invoiceData : InvoiceData = {
+    empresa: {
+      razonSocial: "EL GARAGE DEL GALLEGO S.A.S.",
+      domicilioComercial: "Adan Quiroga 299 - Lastenia, Tucumán",
+      telefono: "+54 381 123-4567",
+      condicionIVA: "Responsable Inscripto"
+    },
+    comprobante: {
+      tipo: tipoComprobante?.descripcion || "B",
+      numero: "00001-00000001",
+      original: true,
+      fecha: new Date().toLocaleDateString(),
+      cuit: "30-12345678-9",
+      ingresosBrutos: "123456789",
+      fechaInicioActividades: "01/01/2020"
+    },
+    receptor: {
+      senorSra: "ROMANO CESAR ISAIAS",
+      direccion: "lomas de tafi",
+      cif: "20148730333",
+      localidadPartido: "Lastenia",
+      provincia: "Tucumán",
+      iva: "Consumidor Final",
+      cuit: "20148730333",
+      condicionVenta: "Contado"
+    },
+    items: [
+      {
+        descripcion: "Producto de prueba",
+        remito: "001",
+        descuento: "0%",
+        cantidad: 1,
+        precioUnitario: 1000.00,
+        importe: 1000.00
+      }
+    ],
+    totales: {
+      subtotal: 1000.00,
+      iva: 173.55,
+      total: 1000.00,
+      sonPesos: "UN MIL CON 00/100 PESOS",
+      cae: "12345678901234",
+      vencimientoCae: new Date().toLocaleDateString()
+    }
+  };
+
+  const handleConfirmarDatos = async () => {
+    try {
+      // Generar el PDF usando el componente InvoicePDF
+      const blob = await pdf(<InvoicePDF data={invoiceData} />).toBlob();
+      
+      // Crear un enlace de descarga
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `factura-${invoiceData.comprobante.numero}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      console.log('PDF descargado correctamente');
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
+    }
+  };
+    console.log(concepto);
   return (
     <Paper sx={{ p: 3, mt: 4, background: "#f9f9f9" }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -12,7 +86,7 @@ export default function ResumenDatosFinales() {
       <Divider sx={{ mb: 2 }} />
        
       <Typography variant="subtitle1" sx={{ mb: 2, textAlign: "center" }}>
-        Tipo de Comprobante: {tipoComprobante?.label}
+        Tipo de Comprobante: {tipoComprobante?.descripcion}
       </Typography> 
       <Divider sx={{ mb: 2 }} />
       <Typography variant="subtitle2" sx={{ mb: 2, textAlign: "center" }}>
@@ -25,15 +99,16 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">Mostrar Nombre de Fantasía: Sí</Typography>
         <Typography variant="body2">Nombre Fantasía: EL GARAGE DEL GALLEGO</Typography>
         <Typography variant="body2">Razón Social: EL GARAGE DEL GALLEGO S. A. S.</Typography>
-        <Typography variant="body2">Punto de Venta: {puntoVenta?.label || "No seleccionado"}</Typography>
+        <Typography variant="body2">Punto de Venta: {puntoVenta?.descripcion || "No seleccionado"}</Typography>
         <Typography variant="body2">Domicilio: Adan Quiroga 299 - Lastenia, Tucumán</Typography>
-        <Typography variant="body2">Conceptos a Incluir: Productos</Typography>
+        <Typography variant="body2">Conceptos a Incluir: {concepto?.descripcion}</Typography>
+
       </Box>
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>Datos del Receptor</Typography>
-        <Typography variant="body2">CUIT: 20148730333</Typography>
-        <Typography variant="body2">Razón Social: ROMANO CESAR ISAIAS</Typography>
-        <Typography variant="body2">Domicilio Comercial: lomas de tafi</Typography>
+        <Typography variant="body2">{tipoDocumento?.descripcion}: {numeroDocumento}</Typography>
+        <Typography variant="body2">Razón Social: {razonSocial}</Typography>
+        <Typography variant="body2">Domicilio Comercial: {domicilioComercial}</Typography>
         <Typography variant="body2">Condición frente al IVA: Consumidor Final</Typography>
         <Typography variant="body2">Condiciones de Venta: Contado</Typography>
         <Typography variant="body2">Comprobantes Asociados: -</Typography>
@@ -84,9 +159,11 @@ export default function ResumenDatosFinales() {
         <Typography variant="body2">IVA Contenido: $ 173,55</Typography>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
-        <Button variant="outlined">Volver</Button>
-        <Button variant="contained">Confirmar Datos...</Button>
-        <Button variant="outlined">Menú Principal</Button>
+        
+        <Button variant="contained" onClick={handleConfirmarDatos}>
+          Confirmar Datos...
+        </Button>
+        
       </Box>
     </Paper>
   );

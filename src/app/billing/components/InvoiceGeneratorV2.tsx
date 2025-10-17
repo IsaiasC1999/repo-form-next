@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button, Box, Modal, Typography, Paper } from '@mui/material';
-import { InvoiceData } from '../types/invoice.types';
+import { InvoiceData } from '../lib/invoice.types';
 import { usePDFGeneration } from '../hooks/usePDFGeneration';
 import dynamic from 'next/dynamic';
 

@@ -27,12 +27,12 @@ async function clientFetch(url: string, options?: RequestInit): Promise<any> {
 
 
 //metodo para tipo de comprobante
-export async function fetchTiposComprobante() : Promise<{ value: string, label: string }[]> {
+export async function fetchTiposComprobante() : Promise<{ codigo: string, descripcion: string }[]> {
   return clientFetch(`${baseUrl}tiposComprobante`);
 }
 
 //metodo para puntos de venta
-export async function fetchPuntosVenta() : Promise<{ value: string, label: string }[]> {
+export async function fetchPuntosVenta() : Promise<{ codigo: string, descripcion: string }[]> {
   return clientFetch(`${baseUrl}puntosVenta`);
 }
 

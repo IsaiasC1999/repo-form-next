@@ -9,7 +9,7 @@ export interface InvoiceData {
 
   // Datos del comprobante
   comprobante: {
-    tipo: 'A' | 'B' | 'C';
+    tipo: string;
     numero: string;
     original: boolean;
     fecha: string;

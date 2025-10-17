@@ -1,4 +1,4 @@
-import InvoiceExampleClientOnly from './components/InvoiceExampleClientOnly';
+import InvoiceExampleClientOnly from './InvoiceExampleClientOnly';
 
 export default function BillingPage() {
   return <InvoiceExampleClientOnly />;

@@ -1,70 +1,70 @@
-        {
+{
             "puntosVenta": [
                 {
-                    "value": "101",
-                    "label": "Sucursal Central"
+                    "codigo": "101",
+                    "descripcion": "Sucursal Central"
                 },
                 {
-                    "value": "102",
-                    "label": "Sucursal Norte"
+                    "codigo": "102",
+                    "descripcion": "Sucursal Norte"
                 },
                 {
-                    "value": "103",
-                    "label": "Sucursal Sur"
+                    "codigo": "103",
+                    "descripcion": "Sucursal Sur"
                 }
             ],
             "tiposComprobante": [
                 {
-                    "value": "1",
-                    "label": "Factura A"
+                    "codigo": "01",
+                    "descripcion": "Factura A"
                 },
                 {
-                    "value": "2",
-                    "label": "Factura B"
+                    "codigo": "06",
+                    "descripcion": "Factura B"
                 },
                 {
-                    "value": "3",
-                    "label": "Factura C"
+                    "codigo": "03",
+                    "descripcion": "Factura C"
                 },
                 {
-                    "value": "4",
-                    "label": "Nota de Crédito"
+                    "codigo": "04",
+                    "descripcion": "Nota de Crédito"
                 },
                 {
-                    "value": "5",
-                    "label": "Nota de Débito"
+                    "codigo": "05",
+                    "descripcion": "Nota de Débito"
                 }
             ],
             "tiposPago": [
                 {
-                    "value": "1",
-                    "label": "Efectivo"
+                    "codigo": "1",
+                    "descripcion": "Efectivo"
                 },
                 {
-                    "value": "2",
-                    "label": "Tarjeta de Crédito"
+                    "codigo": "2",
+                    "descripcion": "Tarjeta de Crédito"
                 },
                 {
-                    "value": "3",
-                    "label": "Tarjeta de Débito"
+                    "codigo": "3",
+                    "descripcion": "Tarjeta de Débito"
                 },
                 {
-                    "value": "4",
-                    "label": "Transferencia Bancaria"
+                    "codigo": "4",
+                    "descripcion": "Transferencia Bancaria"
                 }
             ],
             "tiposDocumento": [
                 {
-                    "value": "1",
-                    "label": "DNI"
+                    "codigo": "1",
+                    "descripcion": "DNI"
                 },
                 {
-                    "value": "2",
-                    "label": "CUIT"
+                    "codigo": "2",
+                    "descripcion": "CUIT"
                 },
                 {
-                    "value": "3",
-                    "label": "Pasaporte"
+                    "codigo": "3",
+                    "descripcion": "Pasaporte"
                 }
             ],
             "arrayTiposDatosAdicionales": [

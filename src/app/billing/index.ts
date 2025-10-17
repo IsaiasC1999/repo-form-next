@@ -6,7 +6,7 @@ export { default as SimpleInvoiceGenerator } from './components/SimpleInvoiceGen
 export { default as InvoiceExampleClientOnly } from './components/InvoiceExampleClientOnly';
 
 // Tipos e interfaces
-export type { InvoiceData, InvoiceItem } from './types/invoice.types';
+export type { InvoiceData, InvoiceItem } from './lib/invoice.types';
 
 // Hooks
 export { useIsClient, usePDFGeneration } from './hooks/usePDFGeneration';

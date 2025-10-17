@@ -20,6 +20,7 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
   const [cantidad, setCantidad] = useState("1");
   const [subtotal, setSubtotal] = useState("");
 
+  // Cargar datos iniciales solo una vez
   useEffect(() => {
     unidadesDeMedida().then((data: any) => {
       setUnidadMedidaOptions(data);
@@ -27,8 +28,9 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
     getCondicionesIVA().then((data: any) => {
       setCondicionesIVAOptions(Array.isArray(data) ? data : []);
     });
-  }, []);
+  }, []); // Array vacío para ejecutar solo al montar
 
+  // Buscar producto por código
   useEffect(() => {
     if (codigo.trim() !== "") {
       getProductosByCodigo(codigo).then((data: any) => {
@@ -44,8 +46,9 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
       setProductoDescripcion("");
       setPrecioUnitario("");
     }
-  }, [codigo]);
+  }, [codigo]); // Solo depende del código
 
+  // Calcular subtotal
   useEffect(() => {
     const cant = parseFloat(cantidad) || 0;
     const precio = parseFloat(precioUnitario) || 0;
@@ -55,7 +58,7 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
     
     // Notificar al componente padre sobre el cambio de subtotal
     onSubtotalChange(itemId, subtotalValue);
-  }, [cantidad, precioUnitario, itemId, onSubtotalChange]);
+  }, [cantidad, precioUnitario]); // Solo depende de cantidad y precio, NO de itemId ni onSubtotalChange
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-end", gap: 1, mb: 2 }}>

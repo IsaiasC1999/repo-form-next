@@ -4,34 +4,39 @@ import { fetchTiposComprobante, fetchPuntosVenta } from "../_api/actions";
 import { useFormStore } from "../store/useFormStore";
 
 export default function PuntoVentaTipoComprobante() {
-  const [puntosVenta, setPuntosVenta] = useState<{ value: string, label: string }[]>([]);
-  const [tiposComprobante, setTiposComprobante] = useState<{ value: string, label: string }[]>([]);
+  const [puntosVenta, setPuntosVenta] = useState<{ codigo: string, descripcion: string }[]>([]);
+  const [tiposComprobante, setTiposComprobante] = useState<{ codigo: string, descripcion: string }[]>([]);
   
   // Zustand store
   const { puntoVenta, tipoComprobante, setPuntoVenta, setTipoComprobante } = useFormStore();
   
   useEffect(() => {
     fetchPuntosVenta().then((data) => {
-      setPuntosVenta(data as { value: string, label: string }[]);
+      setPuntosVenta(data);
+      // Solo establecer valor inicial si no hay uno seleccionado
       if (data.length > 0 && !puntoVenta) {
-        setPuntoVenta(data[0]);
+        setPuntoVenta({ codigo: data[0].codigo, descripcion: data[0].descripcion });
       }
     });
-    fetchTiposComprobante().then((data) => {
-      setTiposComprobante(data as { value: string, label: string }[]);
-      if (data.length > 0 && !tipoComprobante) {
-        setTipoComprobante(data[0]);
-      }
-    });
-  }, [puntoVenta, tipoComprobante, setPuntoVenta, setTipoComprobante]);
+  }, []); // Sin dependencias para evitar bucle infinito
 
-  const handlePuntoVentaChange = (value: string) => {
-    const selected = puntosVenta.find(pv => pv.value === value);
+  useEffect(() => {
+    fetchTiposComprobante().then((data) => {
+      setTiposComprobante(data);
+      // Solo establecer valor inicial si no hay uno seleccionado
+      if (data.length > 0 && !tipoComprobante) {
+        setTipoComprobante({ codigo: data[0].codigo, descripcion: data[0].descripcion });
+      }
+    });
+  }, []); // Sin dependencias para evitar bucle infinito
+
+  const handlePuntoVentaChange = (codigo: string) => {
+    const selected = puntosVenta.find(pv => pv.codigo === codigo);
     setPuntoVenta(selected || null);
   };
 
-  const handleTipoComprobanteChange = (value: string) => {
-    const selected = tiposComprobante.find(tc => tc.value === value);
+  const handleTipoComprobanteChange = (codigo: string) => {
+    const selected = tiposComprobante.find(tc => tc.codigo === codigo);
     setTipoComprobante(selected || null);
   };
   
@@ -46,7 +51,7 @@ export default function PuntoVentaTipoComprobante() {
           <Select
             labelId="punto-venta-label"
             id="punto-venta"
-            value={puntoVenta?.value || ""}
+            value={puntoVenta?.codigo || ""}
             label="Punto de Venta a utilizar"
             sx={{ minWidth: "300px" }}
             onChange={e => handlePuntoVentaChange(e.target.value)}
@@ -55,7 +60,7 @@ export default function PuntoVentaTipoComprobante() {
               <em>Seleccionar...</em>
             </MenuItem>
             {puntosVenta.map(pv => (
-              <MenuItem key={pv.value} value={pv.value}>{pv.label}</MenuItem>
+              <MenuItem key={pv.codigo} value={pv.codigo}>{pv.descripcion}</MenuItem>
             ))}
           </Select>
         </Box>
@@ -64,7 +69,7 @@ export default function PuntoVentaTipoComprobante() {
           <Select
             labelId="tipo-comprobante-label"
             id="tipo-comprobante"
-            value={tipoComprobante?.value || ""}
+            value={tipoComprobante?.codigo || ""}
             label="Tipo de Comprobante"
             sx={{ minWidth: "300px" }}
             onChange={e => handleTipoComprobanteChange(e.target.value)}
@@ -73,7 +78,7 @@ export default function PuntoVentaTipoComprobante() {
               <em>Seleccionar...</em>
             </MenuItem>
             {tiposComprobante.map(tc => (
-              <MenuItem key={tc.value} value={tc.value}>{tc.label}</MenuItem>
+              <MenuItem key={tc.codigo} value={tc.codigo}>{tc.descripcion}</MenuItem>
             ))}
           </Select>
         </Box>

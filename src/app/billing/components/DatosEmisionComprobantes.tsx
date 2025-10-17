@@ -10,25 +10,27 @@ import { useFormStore } from "../store/useFormStore";
 import dayjs from 'dayjs';
 
 export default function DatosEmisionComprobantes() {
-  
-  const { setFechaComprobante, fechaComprobante } = useFormStore(); 
-  
+
+  const { setFechaComprobante, fechaComprobante , setConceptoStore , setMonedaExtranjeraStore , setActividadesStore , referenciaComercial , setReferenciaComercial } = useFormStore();
+
   // Estado para el select de conceptos
-  const [concepto, setConcepto] = useState("");
-  const [referenciaComercial, setReferenciaComercial] = useState("");
+  const [concepto , setConcepto] = useState("");
+  
   // Estado para la fecha del comprobante
   // const [fechaComprobante, setFechaComprobante] = useState(null);
 
   const [selectedActividad, setSelectedActividad] = useState("");
-  const [actividades, setActividades] = useState<{ codigo: number, descripcion: string }[]>([]);
+  const [actividades, setActividades] = useState<{ codigo: string, descripcion: string }[]>([]);
   const [monedaExtranjera, setMonedaExtranjera] = useState(true);
 
   useEffect(() => {
-     arrayTiposDatosAdicionales().then((data: any) => {
+    arrayTiposDatosAdicionales().then((data: any) => {
       setActividades(data as { codigo: number, descripcion: string }[]);
-       if (data.length > 0) setSelectedActividad(data[0].codigo);
+      if (data.length > 0 && !selectedActividad) {
+        setSelectedActividad(data[0].codigo);
+      }
     });
-  }, []);
+  }, []); // Remover dependencias para evitar bucle infinito
 
   const handleFechaChange = (newValue: any) => {
     // Convertir el objeto dayjs a string para guardar en el store
@@ -38,7 +40,7 @@ export default function DatosEmisionComprobantes() {
 
   // Convertir el string del store a objeto dayjs para el DatePicker
   const fechaValue = fechaComprobante ? dayjs(fechaComprobante) : null;
-
+  
   return (
     <Paper sx={{ p: 2, mb: 2, fontSize: 1 }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -65,7 +67,14 @@ export default function DatosEmisionComprobantes() {
             value={concepto}
             label="Conceptos a incluir"
             sx={{ minWidth: "300px" }}
-            onChange={e => setConcepto(e.target.value)}
+            onChange={e =>{
+              setConcepto(e.target.value);
+              const selectedText = e.target.value == "1" ? "Producto" : 
+                        e.target.value == "2" ? "Servicio" : 
+                        e.target.value == "3" ? "Producto y Servicio" : "";
+                        console.log(selectedText + " seleccionado");
+              setConceptoStore(e.target.value ? { codigo: e.target.value, descripcion: selectedText } : null);
+            }}
           >
             <MenuItem defaultChecked value="" >
               <em>Seleccionar...</em>
@@ -80,7 +89,10 @@ export default function DatosEmisionComprobantes() {
             control={
               <Checkbox
                 checked={monedaExtranjera}
-                onChange={e => setMonedaExtranjera(e.target.checked)}
+                onChange={e => {
+                  setMonedaExtranjera(e.target.checked);
+                  setMonedaExtranjeraStore(e.target.checked);
+                }}
               />
             }
             label="Moneda Extrajera"
@@ -101,7 +113,7 @@ export default function DatosEmisionComprobantes() {
             value={selectedActividad}
             label="Actividad"
             sx={{ minWidth: "300px" }}
-            onChange={e => setSelectedActividad(e.target.value)}
+            onChange={e => { setSelectedActividad(e.target.value); setActividadesStore({ codigo: e.target.value, descripcion: actividades.find(op => op.codigo == e.target.value)?.descripcion || '' }); }}
           >
             <MenuItem value="" selected>
               <em>Seleccionar...</em>

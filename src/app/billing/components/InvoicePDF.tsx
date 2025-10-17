@@ -8,7 +8,7 @@ import {
   Image,
   Font,
 } from '@react-pdf/renderer';
-import { InvoiceData } from '../types/invoice.types';
+import { InvoiceData } from '../lib/invoice.types';
 
 // Registrar fuentes si es necesario
 // Font.register({

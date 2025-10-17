@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Box, Typography, Paper} from "@mui/material";
 import CargaProductosComprobante from "./billing/components/CargaProductosComprobante";
 import ResumenDatosFinales from "./billing/components/ResumenDatosFinales";
 import { z } from "zod";
 import DatosEmisionComprobantes from "./billing/components/DatosEmisionComprobantes";
-import DatosReceptorComprobante from "./billing/components/DatosReceptorComprobante";
+import DatosReceptorComprobante from "./billing/components/DatosReceptorFactura/DatosReceptorComprobante";
 import PuntoVentaTipoComprobante from "./billing/components/PuntoVentaTipoComprobante";
 import BillingPage from "./billing/page";
 
@@ -18,6 +18,15 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(1);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // o un loading spinner
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

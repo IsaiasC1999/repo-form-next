@@ -6,7 +6,7 @@ import {
   View,
   StyleSheet,
 } from '@react-pdf/renderer';
-import { InvoiceData } from '../types/invoice.types';
+import { InvoiceData } from '../lib/invoice.types';
 
 const styles = StyleSheet.create({
   page: {
