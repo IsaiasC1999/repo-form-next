@@ -6,12 +6,30 @@ import { useFormStore } from '../store/useFormStore';
 import { pdf } from '@react-pdf/renderer';
 import InvoicePDF from './InvoicePDF';
 import { InvoiceData } from '../lib/invoice.types';
+import { ca } from 'zod/locales';
 
 export default function ResumenDatosFinales() {
-  const { tipoComprobante, puntoVenta , fechaComprobante , concepto , tipoDocumento , numeroDocumento , razonSocial , domicilioComercial , condicionIVA , condicionesVenta } = useFormStore();
+  const { 
+    tipoComprobante, 
+    puntoVenta, 
+    fechaComprobante, 
+    concepto,
+    monedaExtranjera,
+    actividades,
+    referenciaComercial,
+    tipoDocumento,
+    numeroDocumento,
+    razonSocial,
+    domicilioComercial,
+    condicionIVA,
+    condicionesVenta,
+    productosData,
+    subtotalFactura,
+    totalFactura
+  } = useFormStore();
   
-  // Adaptar los datos al formato que espera InvoicePDF
-  const invoiceData : InvoiceData = {
+  // Adaptar los datos del store al formato que espera InvoicePDF
+  const invoiceData = {
     empresa: {
       razonSocial: "EL GARAGE DEL GALLEGO S.A.S.",
       domicilioComercial: "Adan Quiroga 299 - Lastenia, Tucumán",
@@ -20,47 +38,37 @@ export default function ResumenDatosFinales() {
     },
     comprobante: {
       tipo: tipoComprobante?.descripcion || "B",
-      numero: "00001-00000001",
+      numero: `${puntoVenta?.codigo || "00001"}-00000001`,
       original: true,
-      fecha: new Date().toLocaleDateString(),
+      fecha: fechaComprobante || new Date().toLocaleDateString(),
       cuit: "30-12345678-9",
       ingresosBrutos: "123456789",
       fechaInicioActividades: "01/01/2020"
     },
     receptor: {
-      senorSra: "ROMANO CESAR ISAIAS",
-      direccion: "lomas de tafi",
-      cif: "20148730333",
+      senorSra: razonSocial || "CONSUMIDOR FINAL",
+      direccion: domicilioComercial || "Sin dirección",
+      cif: numeroDocumento || "Sin documento",
       localidadPartido: "Lastenia",
       provincia: "Tucumán",
-      iva: "Consumidor Final",
-      cuit: "20148730333",
-      condicionVenta: "Contado"
+      iva: condicionIVA?.descripcion || "Consumidor Final",
+      cuit: numeroDocumento || "Sin documento",
+      condicionVenta: condicionesVenta[0] || "Contado"
     },
-    items: [
-      {
-        descripcion: "Producto de prueba",
-        remito: "001",
-        descuento: "0%",
-        cantidad: 1,
-        precioUnitario: 1000.00,
-        importe: 1000.00
-      }
-    ],
+    items: productosData, // Usar directamente ProductoItem[] del store
     totales: {
-      subtotal: 1000.00,
-      iva: 173.55,
-      total: 1000.00,
-      sonPesos: "UN MIL CON 00/100 PESOS",
+      subtotal: subtotalFactura,
+      iva: subtotalFactura * 0.21, // Calcular IVA 21%
+      total: totalFactura,
+      sonPesos: `${new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(totalFactura).replace('$', '').toUpperCase()} PESOS`,
       cae: "12345678901234",
-      vencimientoCae: new Date().toLocaleDateString()
+      vencimientoCae: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString() // 30 días desde hoy
     }
   };
 
   const handleConfirmarDatos = async () => {
-    
     try {
-      // Generar el PDF usando el componente InvoicePDF
+      // Generar el PDF usando el componente InvoicePDF con datos del store
       const blob = await pdf(<InvoicePDF data={invoiceData} />).toBlob();
       
       // Crear un enlace de descarga
@@ -78,7 +86,7 @@ export default function ResumenDatosFinales() {
       console.error('Error al generar el PDF:', error);
     }
   };
-    console.log(concepto);
+
   return (
     <Paper sx={{ p: 3, mt: 4, background: "#f9f9f9" }}>
       <Typography variant="h6" textAlign="center" gutterBottom>
@@ -96,23 +104,24 @@ export default function ResumenDatosFinales() {
       </Typography>
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>Datos del Emisor</Typography>
-        <Typography variant="body2">Logo Preimpreso: No</Typography>
-        <Typography variant="body2">Mostrar Nombre de Fantasía: Sí</Typography>
-        <Typography variant="body2">Nombre Fantasía: EL GARAGE DEL GALLEGO</Typography>
-        <Typography variant="body2">Razón Social: EL GARAGE DEL GALLEGO S. A. S.</Typography>
         <Typography variant="body2">Punto de Venta: {puntoVenta?.descripcion || "No seleccionado"}</Typography>
-        <Typography variant="body2">Domicilio: Adan Quiroga 299 - Lastenia, Tucumán</Typography>
-        <Typography variant="body2">Conceptos a Incluir: {concepto?.descripcion}</Typography>
-
+        <Typography variant="body2">Tipo de Comprobante: {tipoComprobante?.descripcion || "No seleccionado"}</Typography>
+        <Typography variant="body2">Fecha: {fechaComprobante || "No seleccionada"}</Typography>
+        <Typography variant="body2">Conceptos a Incluir: {concepto?.descripcion || "No seleccionado"}</Typography>
+        <Typography variant="body2">Moneda Extranjera: {monedaExtranjera ? "Sí" : "No"}</Typography>
+        <Typography variant="body2">Actividad: {actividades?.descripcion || "No seleccionada"}</Typography>
+        {referenciaComercial && (
+          <Typography variant="body2">Referencia Comercial: {referenciaComercial}</Typography>
+        )}
       </Box>
+
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>Datos del Receptor</Typography>
-        <Typography variant="body2">{tipoDocumento?.descripcion}: {numeroDocumento}</Typography>
-        <Typography variant="body2">Razón Social: {razonSocial}</Typography>
-        <Typography variant="body2">Domicilio Comercial: {domicilioComercial}</Typography>
+        <Typography variant="body2">{tipoDocumento?.descripcion || "Documento"}: {numeroDocumento || "No ingresado"}</Typography>
+        <Typography variant="body2">Razón Social: {razonSocial || "No ingresada"}</Typography>
+        <Typography variant="body2">Domicilio Comercial: {domicilioComercial || "No ingresado"}</Typography>
         <Typography variant="body2">Condición frente al IVA: {condicionIVA?.descripcion || "No seleccionado"}</Typography>
-        <Typography variant="body2">Condiciones de Venta: {condicionesVenta[0]   || "No seleccionadas"}</Typography>
-        <Typography variant="body2">Comprobantes Asociados: -</Typography>
+        <Typography variant="body2">Condiciones de Venta: {condicionesVenta.join(", ") || "No seleccionadas"}</Typography>
       </Box>
       <Box sx={{ mb: 2 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>Detalle de la Operación</Typography>
@@ -120,8 +129,8 @@ export default function ResumenDatosFinales() {
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
             <thead>
               <tr style={{ background: "#e0e0e0" }}>
-                <th style={{ border: "1px solid #ccc", padding: "4px" }}>Código</th>
-                <th style={{ border: "1px solid #ccc", padding: "4px" }}>Producto/Servicio</th>
+                <th style={{ border: "1px solid #ccc", padding: "4px" }}>codigo</th>
+                <th style={{ border: "1px solid #ccc", padding: "4px" }}>descripcion</th>
                 <th style={{ border: "1px solid #ccc", padding: "4px" }}>Cant.</th>
                 <th style={{ border: "1px solid #ccc", padding: "4px" }}>U. Medida</th>
                 <th style={{ border: "1px solid #ccc", padding: "4px" }}>Prec. Unitario</th>
@@ -132,25 +141,27 @@ export default function ResumenDatosFinales() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>0001</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>asdasd</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>1,00</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>otras unidades</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>1.000,00</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>0,00</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>0,00</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>21%</td>
-                <td style={{ border: "1px solid #ccc", padding: "4px" }}>1.000,00</td>
-              </tr>
+              {productosData.map((producto, index) => (
+                <tr key={producto.id || index}>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.codigo}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.productoDescripcion}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.cantidad}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.unidadMedida?.descripcion || "-"}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.precioUnitario}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.porcentajeBonificacion || "0,00"}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.importeBonificacion || "0,00"}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.alicuotaIVA?.descripcion || "21%"}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "4px" }}>{producto.subtotal}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </Box>
         <Typography variant="body2" sx={{ mt: 1 }}>No hay Impuestos</Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", flexDirection: "column", alignItems: "flex-end", mt: 1 }}>
-          <Typography variant="body2">Subtotal: $ 1.000,00</Typography>
-          <Typography variant="body2">Importe Otros Tributos: $ 0,00</Typography>
-          <Typography variant="body2">Importe Total: $ 1.000,00</Typography>
+          <Typography variant="body2">Subtotal: $ {subtotalFactura.toFixed(2)}</Typography>
+          <Typography variant="body2">IVA (21%): $ {(subtotalFactura * 0.21).toFixed(2)}</Typography>
+          <Typography variant="body2">Importe Total: $ {totalFactura.toFixed(2)}</Typography>
         </Box>
       </Box>
       <Box sx={{ mb: 2 }}>

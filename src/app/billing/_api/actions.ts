@@ -45,12 +45,12 @@ export async function monedaExtranjera() {
   return clientFetch(`${baseUrl}monedas`);
 }
 
-export async function unidadesDeMedida() {
+export async function unidadesDeMedida() : Promise<{ codigo: string, descripcion: string }[]> {
   return clientFetch(`${baseUrl}unidadesDeMedida`);
 }
 
 
-export async function getCondicionesIVA(): Promise<{ codigo: number, descripcion: string }[] > {
+export async function getCondicionesIVA(): Promise<{ codigo: string, descripcion: string }[] > {
   return clientFetch(`${baseUrl}condicionesIVA`);
 }
 

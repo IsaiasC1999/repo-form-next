@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Box, InputLabel, TextField, Select, MenuItem, Button } from "@mui/material";
 import { unidadesDeMedida, getCondicionesIVA, getProductosByCodigo } from "../_api/actions";
 import { useFormStore } from "../store/useFormStore";
@@ -7,20 +7,32 @@ interface ItemProductoProps {
   itemId: number;
   onEliminar: () => void;
   showEliminar: boolean;
-  onSubtotalChange: (itemId: number, subtotal: number) => void;
 }
 
-export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubtotalChange }: ItemProductoProps) {
+export default function ItemProducto({ itemId, onEliminar, showEliminar }: ItemProductoProps) {
+  const { productosData, updateProductoItem } = useFormStore();
+  const [unidadMedidaOptions, setUnidadMedidaOptions] = useState<{ codigo: string; descripcion: string }[]>([]);
+  const [condicionesIVAOptions, setCondicionesIVAOptions] = useState<{ codigo: string; descripcion: string }[]>([]);
 
-   const { condicionesIVAOptions,iva ,setUnidadMedidaOptions, setUnidadMedida, setCondicionesIVAOptions, setIva, setCodigo, setProductoDescripcion, setPrecioUnitario, setCantidad, setSubtotal ,cantidad , precioUnitario , subtotal, productoDescripcion, codigo , unidadMedida , unidadMedidaOptions} = useFormStore();
+  // Obtener los datos actuales del producto desde el store
+  const productoActual = Array.isArray(productosData) ? productosData.find(p => p.id === itemId) : undefined;
+
+  // Estados locales inicializados desde el store
+  const [codigo, setCodigo] = useState(productoActual?.codigo || "");
+  const [productoDescripcion, setProductoDescripcion] = useState(productoActual?.productoDescripcion || "");
+  const [cantidad, setCantidad] = useState(productoActual?.cantidad || "1");
+  const [unidadMedida, setUnidadMedida] = useState(productoActual?.unidadMedida?.codigo || "");
+  const [precioUnitario, setPrecioUnitario] = useState(productoActual?.precioUnitario || "");
+  const [iva, setIva] = useState(productoActual?.alicuotaIVA?.codigo || "");
 
   // Cargar datos iniciales solo una vez
   useEffect(() => {
-    unidadesDeMedida().then((data: any) => {
+    unidadesDeMedida().then((data) => {
       setUnidadMedidaOptions(data);
     });
-    getCondicionesIVA().then((data: any) => {
-      setCondicionesIVAOptions(Array.isArray(data) ? data : []);
+    getCondicionesIVA().then((data) => {
+      setCondicionesIVAOptions(data);
+  
     });
   }, []); // Array vacío para ejecutar solo al montar
 
@@ -42,17 +54,59 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
     }
   }, [codigo]); // Solo depende del código
 
-  // Calcular subtotal
-  useEffect(() => {
+  // Función para actualizar el producto con useCallback para evitar recreación
+  const actualizarProducto = useCallback(() => {
     const cant = parseFloat(cantidad) || 0;
     const precio = parseFloat(precioUnitario) || 0;
     const result = cant * precio;
-    const subtotalValue = result > 0 ? result : 0;
-    setSubtotal(subtotalValue > 0 ? subtotalValue.toFixed(2) : "");
-    
-    // Notificar al componente padre sobre el cambio de subtotal
-    onSubtotalChange(itemId, subtotalValue);
-  }, [cantidad, precioUnitario]); // Solo depende de cantidad y precio, NO de itemId ni onSubtotalChange
+    const subtotalValue = result > 0 ? result.toFixed(2) : "0";
+
+    const unidadSeleccionada = unidadMedidaOptions.find(opt => opt.codigo === unidadMedida);
+    const ivaSeleccionado = condicionesIVAOptions.find(opt => opt.codigo === iva);
+
+    updateProductoItem(itemId, {
+      codigo,
+      productoDescripcion,
+      cantidad,
+      unidadMedida: unidadSeleccionada || { codigo: unidadMedida, descripcion: "" },
+      precioUnitario,
+      alicuotaIVA: ivaSeleccionado || { codigo: iva, descripcion: "" },
+      subtotal: subtotalValue
+    });
+  }, [itemId, codigo, productoDescripcion, cantidad, unidadMedida, precioUnitario, iva, unidadMedidaOptions, condicionesIVAOptions, updateProductoItem]);
+
+  // Calcular subtotal y actualizar store - solo cuando cambien los valores relevantes
+  useEffect(() => {
+    if (unidadMedidaOptions.length > 0 && condicionesIVAOptions.length > 0) {
+      actualizarProducto();
+    }
+  }, [cantidad, precioUnitario, actualizarProducto]);
+
+  // Actualizar otros campos sin recalcular subtotal
+  const handleCodigoChange = (value: string) => {
+    setCodigo(value);
+    if (productoActual) {
+      updateProductoItem(itemId, { ...productoActual, codigo: value });
+    }
+  };
+
+  const handleDescripcionChange = (value: string) => {
+    setProductoDescripcion(value);
+    if (productoActual) {
+      updateProductoItem(itemId, { ...productoActual, productoDescripcion: value });
+    }
+  };
+
+  const handleUnidadMedidaChange = (value: string) => {
+    setUnidadMedida(value);
+    const unidadDescripcion = unidadMedidaOptions.find(opt => opt.codigo === value)?.descripcion || "";
+    if (productoActual) {
+      updateProductoItem(itemId, { 
+        ...productoActual, 
+        unidadMedida: { codigo: value, descripcion: unidadDescripcion } 
+      });
+    }
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-end", gap: 1, mb: 2 }}>
@@ -63,7 +117,7 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
           size="small"
           sx={{ width: 80 }}
           value={codigo}
-          onChange={e => setCodigo(e.target.value)}
+          onChange={e => handleCodigoChange(e.target.value)}
         />
       </Box>
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -76,7 +130,7 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
           minRows={2}
           maxRows={4}
           value={productoDescripcion}
-          onChange={e => setProductoDescripcion(e.target.value)}
+          onChange={e => handleDescripcionChange(e.target.value)}
         />
       </Box>
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -93,7 +147,7 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
         <InputLabel sx={{ minWidth: 80 }}>U. Medida</InputLabel>
         <Select
           value={unidadMedida}
-          onChange={e => setUnidadMedida(e.target.value)}
+          onChange={e => handleUnidadMedidaChange(e.target.value)}
           size="small"
           sx={{ width: 120 }}
           displayEmpty
@@ -143,7 +197,7 @@ export default function ItemProducto({ itemId, onEliminar, showEliminar, onSubto
           variant="outlined"
           size="small"
           sx={{ width: 100 }}
-          value={subtotal}
+          value={productoActual?.subtotal || "0"}
           disabled
         />
       </Box>

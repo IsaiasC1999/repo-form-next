@@ -9,6 +9,7 @@ import {
   Font,
 } from '@react-pdf/renderer';
 import { InvoiceData } from '../lib/invoice.types';
+import { ProductoItem } from '../lib/producto';
 
 // Registrar fuentes si es necesario
 // Font.register({
@@ -172,9 +173,42 @@ const styles = StyleSheet.create({
 });
 
 interface InvoicePDFProps {
-  data: InvoiceData;
-//   logoUrl?: string;
-//   qrCodeUrl?: string;
+  data: {
+    empresa: {
+      razonSocial: string;
+      domicilioComercial: string;
+      telefono: string;
+      condicionIVA: string;
+    };
+    comprobante: {
+      tipo: string;
+      numero: string;
+      original: boolean;
+      fecha: string;
+      cuit: string;
+      ingresosBrutos: string;
+      fechaInicioActividades: string;
+    };
+    receptor: {
+      senorSra: string;
+      direccion: string;
+      cif: string;
+      localidadPartido: string;
+      provincia: string;
+      iva: string;
+      cuit: string;
+      condicionVenta: string;
+    };
+    items: ProductoItem[]; // Usar ProductoItem[] aquí
+    totales: {
+      subtotal: number;
+      iva: number;
+      total: number;
+      sonPesos: string;
+      cae: string;
+      vencimientoCae: string;
+    };
+  };
 }
 
 const InvoicePDF: React.FC<InvoicePDFProps> = ({ data }) => (
@@ -263,22 +297,22 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({ data }) => (
         {/* Table Header */}
         <View style={styles.tableHeader}>
           <Text style={styles.col1}>DESCRIPCIÓN</Text>
-          <Text style={styles.col2}>REMITO</Text>
-          <Text style={styles.col3}>DESC.</Text>
+          <Text style={styles.col2}>CÓDIGO</Text>
+          <Text style={styles.col3}>U. MEDIDA</Text>
           <Text style={styles.col4}>CANTIDAD</Text>
           <Text style={styles.col5}>PRECIO UNITARIO</Text>
-          <Text style={styles.col6}>IMPORTE</Text>
+          <Text style={styles.col6}>SUBTOTAL</Text>
         </View>
 
-        {/* Table Rows */}
+        {/* Table Rows - usando ProductoItem[] */}
         {data.items.map((item, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={styles.col1}>{item.descripcion}</Text>
-            <Text style={styles.col2}>{item.remito}</Text>
-            <Text style={styles.col3}>{item.descuento}</Text>
-            <Text style={styles.col4}>{item.cantidad.toFixed(2)}</Text>
-            <Text style={styles.col5}>{item.precioUnitario.toFixed(2)}</Text>
-            <Text style={styles.col6}>{item.importe.toFixed(2)}</Text>
+          <View key={item.id || index} style={styles.tableRow}>
+            <Text style={styles.col1}>{item.productoDescripcion}</Text>
+            <Text style={styles.col2}>{item.codigo}</Text>
+            <Text style={styles.col3}>{item.unidadMedida?.descripcion || ''}</Text>
+            <Text style={styles.col4}>{item.cantidad}</Text>
+            <Text style={styles.col5}>${parseFloat(item.precioUnitario || '0').toFixed(2)}</Text>
+            <Text style={styles.col6}>${parseFloat(item.subtotal || '0').toFixed(2)}</Text>
           </View>
         ))}
 

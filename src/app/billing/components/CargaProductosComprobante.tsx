@@ -1,47 +1,57 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Paper, Typography, Box, InputLabel, TextField, Button } from "@mui/material";
 import { unidadesDeMedida, getCondicionesIVA, getProductosByCodigo } from "../_api/actions";
 import ItemProducto from "./ItemProducto";
+import { useFormStore } from "../store/useFormStore";
 
 export default function CargaProductosComprobante() {
-  const [items, setItems] = useState([{ id: 1 }]);
-  const [itemSubtotals, setItemSubtotals] = useState<{[key: number]: number}>({});
+  const { productosData, addProductoItem, removeProductoItem, subtotalFactura, totalFactura } = useFormStore();
 
+  // Asegurar que productosData sea un array
+  const productos = Array.isArray(productosData) ? productosData : [];
+
+  // Inicializar con un producto si está vacío
   useEffect(() => {
-    unidadesDeMedida().then((data: any) => {
-      // Si el backend devuelve un array de objetos { codigo, descripcion }
-      
-    });
-    getCondicionesIVA().then((data: any) => {
-      // Si el backend devuelve un array de objetos { codigo, descripcion }
-      
-    });
-  }, []);
+    if (productos.length === 0) {
+      addProductoItem({
+        id: 1,
+        codigo: "",
+        productoDescripcion: "",
+        cantidad: "1",
+        unidadMedida: { codigo: "00", descripcion: "" },
+        precioUnitario: "",
+        porcentajeBonificacion: "0",
+        importeBonificacion: "0",
+        alicuotaIVA: { codigo: "", descripcion: "" },
+        subtotal: "0"
+      });
+    }
+  }, [productos.length, addProductoItem]);
 
-  const handleSubtotalChange = (itemId: number, subtotal: number) => {
-    setItemSubtotals(prev => ({
-      ...prev,
-      [itemId]: subtotal
-    }));
-  };
-
-  const subtotalFinal = Object.values(itemSubtotals).reduce((sum, subtotal) => sum + subtotal, 0);
-  const importeTotal = subtotalFinal; // Por ahora igual al subtotal, luego se puede agregar otros tributos
+  const importeTotal = totalFactura; // Por ahora igual al subtotal, luego se puede agregar otros tributos
 
   const agregarItem = () => {
-    const newId = Math.max(...items.map(item => item.id)) + 1;
-    setItems([...items, { id: newId }]);
+    const newId = productos.length > 0 
+      ? Math.max(...productos.map(item => item.id)) + 1 
+      : 1;
+    
+    addProductoItem({
+      id: newId,
+      codigo: "",
+      productoDescripcion: "",
+      cantidad: "1",
+      unidadMedida: { codigo: "00", descripcion: "seleccionar" },
+      precioUnitario: "",
+      porcentajeBonificacion: "0",
+      importeBonificacion: "0",
+      alicuotaIVA: { codigo: "seleccionar", descripcion: "" },
+      subtotal: "0"
+    });
   };
 
   const eliminarItem = (id: number) => {
-    if (items.length > 1) {
-      setItems(items.filter(item => item.id !== id));
-      // Remover el subtotal del item eliminado
-      setItemSubtotals(prev => {
-        const newSubtotals = { ...prev };
-        delete newSubtotals[id];
-        return newSubtotals;
-      });
+    if (productos.length > 1) {
+      removeProductoItem(id);
     }
   };
 
@@ -51,13 +61,13 @@ export default function CargaProductosComprobante() {
         Datos de la Operación 
       </Typography>
       
-      {items.map((item) => (
+      {productos.map((item) => (
         <ItemProducto 
           key={item.id} 
           itemId={item.id}
           onEliminar={() => eliminarItem(item.id)}
-          showEliminar={items.length > 1}
-          onSubtotalChange={handleSubtotalChange}
+          showEliminar={productos.length > 1}
+          
         />
       ))}
 
@@ -76,7 +86,7 @@ export default function CargaProductosComprobante() {
             variant="outlined"
             size="small"
             sx={{ width: 100 }}
-            value={subtotalFinal.toFixed(2)}
+            value={subtotalFactura.toFixed(2)}
             disabled
           />
         </Box>
